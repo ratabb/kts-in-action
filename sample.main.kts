@@ -1,3 +1,5 @@
 #!/usr/bin/env kotlin
 
-println("Hello, ${args[0]}!")
+ val name: String = args.firstOrNull() ?: "stranger"
+
+println("Hello, $name!")
