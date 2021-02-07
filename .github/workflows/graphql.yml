@@ -1,0 +1,21 @@
+name: "GraphQl"
+
+on:
+  workflow_dispatch:
+    inputs:
+      request:
+        description: 'GraphQl request query'     
+        required: true
+        default: "{ \\\"query\\\": \\\"query { viewer { login } }\\\" }"
+
+jobs:
+  graphQl:
+    name: "GraphQl"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: fwilhe2/setup-kotlin@main
+        with:
+          version: '1.4.30'
+          install-native: false
+      - run: kotlin graphql.main.kts "${{ github.token }}" "${{ github.event.inputs.request }}" 
