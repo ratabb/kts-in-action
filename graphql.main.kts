@@ -1,7 +1,7 @@
 #!/usr/bin/env kotlin
 
+/* MavenCenter */
 @file:Repository("https://repo1.maven.org/maven2/")
-@file:Repository("https://jcenter.bintray.com")
 @file:DependsOn("com.github.kittinunf.fuel:fuel:2.3.0")
 @file:DependsOn("info.picocli:picocli:4.5.1")
 

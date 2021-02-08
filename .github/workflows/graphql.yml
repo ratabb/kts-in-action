@@ -13,9 +13,14 @@ jobs:
     name: "GraphQl"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: fwilhe2/setup-kotlin@main
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Setup Kotlin
+        uses: fwilhe2/setup-kotlin@main
         with:
           version: '1.4.30'
           install-native: false
-      - run: kotlin graphql.main.kts "${{ github.token }}" "${{ github.event.inputs.request }}" 
+
+      - name: Run GraphQl Script
+        run: kotlin graphql.main.kts "${{ github.token }}" "${{ github.event.inputs.request }}" 
