@@ -1,0 +1,32 @@
+name: "QrCodeGen"
+
+on:
+  workflow_dispatch:
+    inputs:
+      text:
+        description: "Text to be encode"
+        required: true
+        default: "Hello World!"
+
+jobs:
+  qrCodeGen:
+    name: "QrCodeGen"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Setup Kotlin
+        uses: fwilhe2/setup-kotlin@main
+        with:
+          version: '1.4.30'
+          install-native: false
+
+      - name: Run QrCode Script
+        run: kotlin qrcode.main.kts "${{ github.event.inputs.text }}" "--verbose"
+
+      - name: Upload output
+        uses: actions/upload-artifact@v1
+        with:
+          name: output.svg
+          path: output.svg
