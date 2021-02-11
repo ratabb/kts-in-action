@@ -1,0 +1,21 @@
+name: "Meme"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  meme:
+    name: "Meme"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Setup Kotlin
+        uses: fwilhe2/setup-kotlin@main
+        with:
+          version: '1.4.30'
+          install-native: false
+
+      - name: Run Meme Script
+        run: kotlin meme.main.kts
