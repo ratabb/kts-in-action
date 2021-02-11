@@ -4,7 +4,8 @@
 @file:Repository("https://repo1.maven.org/maven2/")
 @file:DependsOn("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
 @file:DependsOn("io.nayuki:qrcodegen:1.6.0")
-@file:DependsOn("com.github.ajalt.clikt:clikt:3.1.0")
+@file:DependsOn("com.github.ajalt.clikt:clikt-jvm:3.1.0")
+@file:CompilerOptions("-jvm-target", "1.8")
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -22,12 +23,10 @@ import io.nayuki.qrcodegen.QrCode.MIN_VERSION
 import io.nayuki.qrcodegen.QrSegment.makeSegments
 import java.awt.image.BufferedImage
 import java.io.File
-import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.util.Locale
 import javax.imageio.ImageIO
-import kotlin.system.exitProcess
 
 enum class Type {
     PNG, SVG;
@@ -44,6 +43,9 @@ fun String.writeSvg(filePath: String) {
     Files.write(File(filePath).toPath(), this.toByteArray())
 }
 
+fun exportGihubEnv(name: String, value: String){
+    File(System.getenv("GITHUB_ENV")).appendText("${name}=${value}\n")
+}
 
 class QrCodeGenCli : CliktCommand(
     name = "QrCodeGenCli",
@@ -107,12 +109,11 @@ class QrCodeGenCli : CliktCommand(
                 Type.PNG -> code.toImage(scale, border).writePng(file)
                 Type.SVG -> code.toSvgString(border).writeSvg(file)
             }
-            echo("output: ${File(file).absolutePath}")
+            exportGihubEnv("qrOutput", file)
         } catch (e: Exception) {
             echo(e.localizedMessage, err = true)
         }
     }
 }
 
-val exitCode = QrCodeGenCli().main(args)
-exitProcess(exitCode)
+QrCodeGenCli().main(args)

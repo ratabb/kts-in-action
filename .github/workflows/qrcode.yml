@@ -7,6 +7,14 @@ on:
         description: "Text to be encode"
         required: true
         default: "Hello World!"
+      type:
+        description: "Output type: SVG | PNG"
+        required: false
+        default: "SVG"
+      output:
+        description: "Output file name without extension"
+        required: false
+        default: "output"
 
 jobs:
   qrCodeGen:
@@ -23,10 +31,17 @@ jobs:
           install-native: false
 
       - name: Run QrCode Script
-        run: kotlin qrcode.main.kts "${{ github.event.inputs.text }}" "--verbose"
+        run: kotlin qrcode.main.kts "${{ github.event.inputs.text }}" "--output=${{ github.event.inputs.output }}" "--type=${{ github.event.inputs.type }}"
+ 
+      - name: Upload pixeldrain
+        if: ${{ github.event.inputs.type == 'PNG' }}
+        run: |
+          wget https://raw.githubusercontent.com/Fornax96/pdup/master/pdup -O pdup
+          chmod +x ./pdup
+          ./pdup ${{ env.qrOutput }}
 
       - name: Upload output
         uses: actions/upload-artifact@v1
         with:
-          name: output.svg
-          path: output.svg
+          name: qrcode_output
+          path: ${{ env.qrOutput }}
